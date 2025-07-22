@@ -45,7 +45,7 @@ const Login = () => {
 
   return (
     <Container maxWidth="xs">
-      <Paper elevation={6} sx={{ p: 4, mt: 10, borderRadius: 4 }}>
+      <Paper elevation={6} sx={{ p: 4, mt: 20, borderRadius: 4 }}>
         <Typography
           variant="h5"
           fontWeight={700}
@@ -55,12 +55,12 @@ const Login = () => {
           Sign in
         </Typography>
 
-        <Typography variant="body2" textAlign="center" sx={{ mb: 2 }}>
+        {/* <Typography variant="body2" textAlign="center" sx={{ mb: 2 }}>
           Don&apos;t have an account?{" "}
           <Link href="#" color="error" underline="none" fontWeight="600">
             Get started
           </Link>
-        </Typography>
+        </Typography> */}
 
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
@@ -101,11 +101,11 @@ const Login = () => {
             }}
           />
 
-          <Box textAlign="right" mb={2}>
+          {/* <Box textAlign="right" mb={2}>
             <Link href="#" variant="body2" underline="hover">
               Forgot password?
             </Link>
-          </Box>
+          </Box> */}
 
           <Button
             fullWidth
@@ -117,6 +117,7 @@ const Login = () => {
               color: "#fff",
               textTransform: "none",
               borderRadius: 2,
+              mt:3
             }}
           >
             Sign in
