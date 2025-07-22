@@ -1,0 +1,30 @@
+# === Node (React Frontend) ===
+node_modules/
+build/
+dist/
+.env
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Python (Flask Backend) ===
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.log
+.env
+instance/
+.venv/
+venv/
+*.sqlite3
+
+# === OS / Editor ===
+*.swp
+*.swo
+*.bak
+*.tmp
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/
