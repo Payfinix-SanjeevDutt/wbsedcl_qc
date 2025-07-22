@@ -62,7 +62,7 @@ const Dashboard = () => {
 
   return (
     <Container>
-      <Typography variant="h4" mt={4} mb={2}>Meter Reading Records</Typography>
+      <Typography variant="h4" mt={4} mb={2} sx={{textAlign:'center'}}>Meter Reading Records</Typography><br/>
       <Grid container spacing={2}>
         {records.map(record => (
           <Grid item xs={12} sm={6} md={4} key={record.id}>
@@ -73,7 +73,7 @@ const Dashboard = () => {
 
       {selected && <MeterModal record={selected} onClose={() => setSelected(null)} />}
 
-      <Box display="flex" justifyContent="center" mt={4}>
+      <Box display="flex" justifyContent="center" mt={9} mb={6}>
         <Pagination count={totalPages} page={page} onChange={handlePageChange} color="primary" />
       </Box>
     </Container>

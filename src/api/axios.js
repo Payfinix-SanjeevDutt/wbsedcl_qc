@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API || 'http://localhost:8000', // fallback for local dev
+  baseURL: "https://truereadapi.net"
 });
 
 api.interceptors.request.use((config) => {
