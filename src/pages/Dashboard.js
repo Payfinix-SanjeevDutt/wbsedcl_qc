@@ -36,69 +36,80 @@ import MeterModal from "../components/MeterModal";
 import { Grid, Container, Typography, Pagination, Box } from "@mui/material";
 
 const Dashboard = () => {
-  const [records, setRecords] = useState([]);
-  const [selected, setSelected] = useState(null);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+    const [records, setRecords] = useState([]);
+    const [selected, setSelected] = useState(null);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
-  const fetchData = async (currentPage) => {
-    try {
-      const res = await axios.get(
-        `/qcwbsedcl-master?page=${currentPage}&per_page=12`
-      );
-      setRecords(res.data.data);
-      setTotalPages(res.data.pages);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    const fetchData = async (currentPage) => {
+        try {
+            const res = await axios.get(
+                `/qcwbsedcl-master?page=${currentPage}&per_page=12`
+            );
+            setRecords(res.data.data);
+            setTotalPages(res.data.pages);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
-  useEffect(() => {
-    fetchData(page);
-  }, [page]);
+    useEffect(() => {
+        fetchData(page);
+    }, [page]);
 
-  const handlePageChange = (event, value) => {
-    setPage(value);
-  };
+    const handlePageChange = (event, value) => {
+        setPage(value);
+    };
 
-  return (
-    <Container>
-      <Typography
-        variant="h4"
-        mt={4}
-        mb={2}
-        sx={{
-          textAlign: "center",
-          fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
-          fontWeight: 600,
-          letterSpacing: 0.5,
-        }}
-      >
-        Meter Reading Records"
-      </Typography>
-      <br />
-      <Grid container spacing={2}>
-        {records.map((record) => (
-          <Grid item xs={12} sm={6} md={4} key={record.id}>
-            <MeterCard record={record} onClick={() => setSelected(record)} />
-          </Grid>
-        ))}
-      </Grid>
+    return (
+        <Container>
+            <Typography
+                variant="h4"
+                mt={4}
+                mb={2}
+                sx={{
+                    textAlign: "center",
+                    fontFamily:
+                        '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
+                    fontWeight: 600,
+                    letterSpacing: 0.5,
+                }}
+            >
+                Meter Reading Records
+            </Typography>
+            <br />
+            <Grid container spacing={2}>
+                {records.map((record) => (
+                    <Grid item xs={12} sm={6} md={4} key={record.id}>
+                        <MeterCard
+                            record={record}
+                            onClick={() => setSelected(record)}
+                        />
+                    </Grid>
+                ))}
+            </Grid>
 
-      {selected && (
-        <MeterModal record={selected} onClose={() => setSelected(null)} />
-      )}
+            {selected && (
+                <MeterModal
+                    record={selected}
+                    onClose={() => setSelected(null)}
+                    onSubmitSuccess={() => {
+                        setSelected(null);
+                        fetchData(page); 
+                    }}
+                />
+            )}
 
-      <Box display="flex" justifyContent="center" mt={9} mb={6}>
-        <Pagination
-          count={totalPages}
-          page={page}
-          onChange={handlePageChange}
-          color="primary"
-        />
-      </Box>
-    </Container>
-  );
+            <Box display="flex" justifyContent="center" mt={9} mb={6}>
+                <Pagination
+                    count={totalPages}
+                    page={page}
+                    onChange={handlePageChange}
+                    color="primary"
+                />
+            </Box>
+        </Container>
+    );
 };
 
 export default Dashboard;
