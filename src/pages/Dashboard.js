@@ -2,18 +2,30 @@ import React, { useEffect, useState } from "react";
 import axios from "../api/axios";
 import MeterCard from "../components/MeterCard";
 import MeterModal from "../components/MeterModal";
-import { Grid, Container, Typography, Pagination, Box } from "@mui/material";
+import {
+  Grid,
+  Container,
+  Typography,
+  Pagination,
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 
 const Dashboard = () => {
   const [records, setRecords] = useState([]);
   const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [sort, setSort] = useState("oldest"); // "latest" (newest first) | "oldest"
 
   const fetchData = async (currentPage) => {
     try {
+      const order = sort === "latest" ? "desc" : "asc";
       const res = await axios.get(
-        `/qcwbsedcl-master?page=${currentPage}&per_page=12`
+        `/qcwbsedcl-master?page=${currentPage}&per_page=12&sort=${sort}&order=${order}`
       );
       setRecords(res.data.data);
       setTotalPages(res.data.pages);
@@ -24,7 +36,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData(page);
-  }, [page]);
+  }, [page, sort]);
 
   const handlePageChange = (_e, value) => setPage(value);
 
@@ -56,6 +68,24 @@ const Dashboard = () => {
       >
         Meter Reading Records
       </Typography>
+      {/* Sort dropdown */}
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <FormControl size="small" sx={{ minWidth: 180 }}>
+          <InputLabel id="sort-label">Sort</InputLabel>
+          <Select
+            labelId="sort-label"
+            label="Sort"
+            value={sort}
+            onChange={(e) => {
+              setSort(e.target.value);
+              setPage(1); // reset to first page when sort changes
+            }}
+          >
+            <MenuItem value="latest">Newest first</MenuItem>
+            <MenuItem value="oldest">Oldest first</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
 
       <Grid container spacing={2}>
         {records.map((record) => (
