@@ -12,6 +12,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  TextField,
 } from "@mui/material";
 
 const Dashboard = () => {
@@ -19,14 +20,23 @@ const Dashboard = () => {
   const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [sort, setSort] = useState("oldest"); // "latest" (newest first) | "oldest"
+  const [sort, setSort] = useState("oldest");
+  const [date, setDate] = useState(""); // <-- new state for date
 
   const fetchData = async (currentPage) => {
     try {
       const order = sort === "latest" ? "desc" : "asc";
-      const res = await axios.get(
-        `/qcwbsedcl-master?page=${currentPage}&per_page=12&sort=${sort}&order=${order}`
-      );
+
+      const res = await axios.get("/qcwbsedcl-master", {
+        params: {
+          page: currentPage,
+          per_page: 12,
+          sort,
+          order,
+          date: date || undefined, // only include if selected
+        },
+      });
+
       setRecords(res.data.data);
       setTotalPages(res.data.pages);
     } catch (err) {
@@ -36,17 +46,15 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData(page);
-  }, [page, sort]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, sort, date]);
 
   const handlePageChange = (_e, value) => setPage(value);
 
-  // called when a card finishes its collapse after a successful Skip
   const handleCardGone = (rec) => {
     setRecords((prev) => {
       const next = prev.filter((r) => r.id !== rec.id);
-      // Optional: if page is now empty, go to previous page
       if (next.length === 0 && page > 1) {
-        // defer to avoid setState-in-reducer warning
         setTimeout(() => setPage((p) => p - 1), 0);
       }
       return next;
@@ -68,8 +76,23 @@ const Dashboard = () => {
       >
         Meter Reading Records
       </Typography>
-      {/* Sort dropdown */}
-      <Box display="flex" justifyContent="flex-end" mb={2}>
+
+      {/* Filters row */}
+      <Box display="flex" justifyContent="flex-end" gap={2} mb={2}>
+        {/* Simple date picker */}
+        <TextField
+          type="date"
+          size="small"
+          label="Date"
+          InputLabelProps={{ shrink: true }}
+          value={date}
+          onChange={(e) => {
+            setDate(e.target.value);
+            setPage(1); // reset to first page
+          }}
+        />
+
+        {/* Sort dropdown */}
         <FormControl size="small" sx={{ minWidth: 180 }}>
           <InputLabel id="sort-label">Sort</InputLabel>
           <Select
@@ -78,7 +101,7 @@ const Dashboard = () => {
             value={sort}
             onChange={(e) => {
               setSort(e.target.value);
-              setPage(1); // reset to first page when sort changes
+              setPage(1);
             }}
           >
             <MenuItem value="latest">Newest first</MenuItem>
@@ -93,7 +116,7 @@ const Dashboard = () => {
             <MeterCard
               record={record}
               onClick={() => setSelected(record)}
-              onSubmitSuccess={handleCardGone} // <<— make card disappear on Skip success
+              onSubmitSuccess={handleCardGone}
             />
           </Grid>
         ))}
@@ -105,7 +128,7 @@ const Dashboard = () => {
           onClose={() => setSelected(null)}
           onSubmitSuccess={() => {
             setSelected(null);
-            fetchData(page); // keep your modal flow: refetch after edit/submit
+            fetchData(page);
           }}
         />
       )}
